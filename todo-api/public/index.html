@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📝 To-Do API - Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            font-size: 2em;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .form-section {
+            padding: 30px;
+            background: white;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 50px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #4facfe;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .tasks-section {
+            padding: 0 30px 30px;
+        }
+
+        .task-item {
+            background: white;
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            border-left: 4px solid #4facfe;
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+        }
+
+        .task-item.completed {
+            opacity: 0.7;
+            border-left-color: #28a745;
+        }
+
+        .task-item.completed .task-title {
+            text-decoration: line-through;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .task-date {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9em;
+            border-radius: 20px;
+        }
+
+        .btn-danger {
+            background: #ff4757;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #ff3838;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #28a745;
+        }
+
+        .notification.error {
+            background: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .form-group {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 20px;
+            }
+            
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 To-Do API</h1>
+            <p>Interface para testar a API REST de gerenciamento de tarefas</p>
+        </div>
+
+        <div class="stats" id="statsContainer">
+            <div class="stat-card">
+                <h3 id="totalTasks">-</h3>
+                <p>Total</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="completedTasks">-</h3>
+                <p>Concluídas</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="pendingTasks">-</h3>
+                <p>Pendentes</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="completionPercent">-%</h3>
+                <p>Progresso</p>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-group">
+                <input type="text" id="taskInput" placeholder="Digite sua nova tarefa..." maxlength="200">
+                <button class="btn btn-primary" onclick="addTask()">
+                    ➕ Adicionar Tarefa
+                </button>
+            </div>
+        </div>
+
+        <div class="tasks-section">
+            <div id="tasksContainer">
+                <div class="loading">🔄 Carregando tarefas...</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Configuração da API
+        const API_BASE = '/tarefas';
+
+        // Carregar dados iniciais
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTasks();
+            loadStats();
+
+            // Enter para adicionar tarefa
+            document.getElementById('taskInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addTask();
+                }
+            });
+        });
+
+        // Mostrar notificação
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Carregar estatísticas
+        async function loadStats() {
+            try {
+                const response = await fetch('/estatisticas');
+                const stats = await response.json();
+
+                document.getElementById('totalTasks').textContent = stats.total;
+                document.getElementById('completedTasks').textContent = stats.concluidas;
+                document.getElementById('pendingTasks').textContent = stats.pendentes;
+                document.getElementById('completionPercent').textContent = stats.percentualConclusao + '%';
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+
+        // Carregar tarefas
+        async function loadTasks() {
+            try {
+                const response = await fetch(API_BASE);
+                const tasks = await response.json();
+
+                const container = document.getElementById('tasksContainer');
+
+                if (tasks.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>🎯 Nenhuma tarefa encontrada</h3>
+                            <p>Que tal adicionar sua primeira tarefa?</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = tasks.map(task => `
+                    <div class="task-item ${task.concluida ? 'completed' : ''}" data-id="${task.id}">
+                        <input 
+                            type="checkbox" 
+                            class="task-checkbox" 
+                            ${task.concluida ? 'checked' : ''} 
+                            onchange="toggleTask(${task.id}, this.checked)"
+                        >
+                        <div class="task-content">
+                            <div class="task-title">${task.titulo}</div>
+                            <div class="task-date">📅 ${new Date(task.criado_em).toLocaleString('pt-BR')}</div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-danger btn-small" onclick="deleteTask(${task.id})">
+                                🗑️ Excluir
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                document.getElementById('tasksContainer').innerHTML = `
+                    <div style="text-align: center; color: #dc3545; padding: 20px;">
+                        ❌ Erro ao carregar tarefas: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Adicionar tarefa
+        async function addTask() {
+            const input = document.getElementById('taskInput');
+            const titulo = input.value.trim();
+
+            if (!titulo) {
+                showNotification('⚠️ Digite um título para a tarefa', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(API_BASE, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ titulo })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.erro || 'Erro ao criar tarefa');
+                }
+
+                const newTask = await response.json();
+                
+                input.value = '';
+                showNotification('✅ Tarefa criada com sucesso!');
+                
+                loadTasks();
+                loadStats();
+
+            } catch (error) {
+                showNotification(`❌ ${error.message}`, 'error');
+            }
+        }
+
+        // Alternar status da tarefa
+        async function toggleTask(id, completed) {
+            try {
+                const response = await fetch(`${API_BASE}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ concluida: completed })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.erro || 'Erro ao atualizar tarefa');
+                }
+
+                showNotification(completed ? '✅ Tarefa concluída!' : '🔄 Tarefa reaberta!');
+                
+                loadTasks();
+                loadStats();
+
+            } catch (error) {
+                showNotification(`❌ ${error.message}`, 'error');
+                loadTasks(); // Recarregar para reverter o checkbox
+            }
+        }
+
+        // Deletar tarefa
+        async function deleteTask(id) {
+            if (!confirm('🗑️ Tem certeza que deseja excluir esta tarefa?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.erro || 'Erro ao deletar tarefa');
+                }
+
+                showNotification('🗑️ Tarefa excluída com sucesso!');
+                
+                loadTasks();
+                loadStats();
+
+            } catch (error) {
+                showNotification(`❌ ${error.message}`, 'error');
+            }
+        }
+
+        // Atualizar a cada 30 segundos (opcional)
+        setInterval(() => {
+            loadStats();
+        }, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "name": "todo-api",
+  "version": "1.0.0",
+  "description": "API RESTful para gerenciar lista de tarefas usando Node.js, Express e SQLite.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "sqlite",
+    "api",
+    "crud",
+    "rest-api"
+  ],
+  "author": "SEU NOME",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
+
